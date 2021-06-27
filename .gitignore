@@ -1,0 +1,15 @@
+#Ignore Mac system files
+.DS_store
+
+#Ignore personal editor config files
+.vscode/
+
+#Ignore venv
+venv/
+
+#Ignore snippet testing folder
+testing/
+
+
+
+
