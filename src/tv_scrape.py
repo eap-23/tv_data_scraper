@@ -129,15 +129,22 @@ def generate_plots(df, folderPath, show_title):
     box_df = df.copy()
     heat_df = df.copy()
 
-    df['x'] = np.where(df['episode_number'].isin(range(1,10)), df['season'].astype(str) + 
-		'x0' + df['episode_number'].astype(str),
-		df['season'].astype(str) + 'x' + df['episode_number'].astype(str))
-
     plt.style.use('ggplot')
 
-    seasons = df['season'].drop_duplicates().to_list()
+    # seasons = df['season'].drop_duplicates().to_list()
 
     fig1 = plt.figure(1, figsize=(12, 6), dpi=200)
+    
+    #Add x column to dataframe; 1 through total number of episodes
+    #x column used as x-axis for trend line and each season rating series
+    trend_x = list(range(1, df.shape[0] + 1))
+    trend_y = df['rating'].to_list()
+    df.insert(8, 'x', trend_x)
+    
+    #Calculate and plot trend line.
+    z = np.polyfit(trend_x, trend_y, 1)
+    p = np.poly1d(z)
+    plt.plot(trend_x,p(trend_x), linestyle='dashed', color='black')
 
     #Initialize the below to be used in for loop in next code block
     #n will track where next tick_mark/label should go
@@ -146,6 +153,8 @@ def generate_plots(df, folderPath, show_title):
     tick_label = 0
     tick_marks = []
     tick_labels = []
+    
+    seasons = df['season'].drop_duplicates().to_list()
     
     for season in seasons:
         index = df[df['season'] != season].index
@@ -157,7 +166,16 @@ def generate_plots(df, folderPath, show_title):
 
         plt.plot(x, y, marker=".")
         
-        tick_mark = len(x)/2 + n
+        #Use modulo to determine if odd or even number of episodes in season
+        #if odd then modulo > 0 and add 0.5 to tick mark
+        #ex. for season with 11 episodes, put tick mark at episode 6 (11/2 = 5.5. 5.5 + 0.5 = 6)
+        #if even then modulo = 0 and can put tick mark at half mark
+        #ex. for season with 10 episodes, tick mark at episode 5
+        if len(x) % 2 > 0:
+            tick_mark = len(x)/2 + 0.5 + n
+        else:
+            tick_mark = len(x)/2 + n
+
         n = len(x) + n
         
         tick_label = tick_label + 1
