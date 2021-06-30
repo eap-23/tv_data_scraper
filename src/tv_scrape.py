@@ -19,13 +19,27 @@ def remove_str(votes):
     return votes
 
 def get_df(url):
-    print("\nPlease wait while program scapes data from IMDB!")
     
-    main_response = requests.get(url)
-
-    main_html = BeautifulSoup(main_response.text, 'lxml')
-
-    show_title = main_html.find('div', class_="title_wrapper").h1.text
+    #First error catch
+    #Check that url entered begins with expected "https://www.imdb.com/title/"
+    while not url.startswith("https://www.imdb.com/title/"):
+        print("Invalid url. TV Show home page should begin with https://www.imdb.com/title/")
+        url = input("\nEnter IMDB url for TV Show: ")
+    
+    #Second error catch
+    #Catch error where tv series home page not found on IMDB
+    while True:
+        try:
+            main_response = requests.get(url)
+            main_html = BeautifulSoup(main_response.text, 'lxml')
+            show_title = main_html.find('div', class_="title_wrapper").h1.text
+            break
+        except:
+            print("TV Show could not not be found on IMDB with given url. Please try again.")
+            url = input("\nEnter IMDB url for TV Show: ")
+        
+    print("\nPlease wait while tv_scrape pulls data from IMDB!")
+        
     show_title = show_title.rstrip()
 
     numSeasons = main_html.find('div', class_='seasons-and-year-nav').a.text
