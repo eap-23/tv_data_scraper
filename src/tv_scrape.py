@@ -54,20 +54,17 @@ def get_df(url):
     
     try:
         for sn in range(1, numSeasons + 1):
-
-            #Pause the loop
-            sleep(randint(8,10))
             
             #Make get request for season page
             response = requests.get(request_url + str(sn))
 
             #Pause the loop
-            # sleep(randint(8,10))
+            sleep(randint(8,10))
 
             #Monitor the request
+            #See below episode for loop for frequency print
             num_request += 1
             elapsed_time = time() - start_time
-            print ('Request: ' + 'Season ' + str(num_request) + '; Frequency: ' + str(num_request/elapsed_time) + ' requests/s')
 
             #Parse content with Beautiful Soup
             page_html = BeautifulSoup(response.text, 'lxml')
@@ -95,6 +92,10 @@ def get_df(url):
                     episode_data = [show_title, season, episodeNum, title, airdate, rating, totalVotes, epDescription]
 
                     episodes.append(episode_data)
+            
+            #Frequency print placed here so user doesn't get request update for any blank season pages        
+            print ('Request: ' + 'Season ' + str(num_request) + '; Frequency: ' + str(num_request/elapsed_time) + ' requests/s')
+            
     except StopIteration:
         pass
 
