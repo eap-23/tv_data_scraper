@@ -138,7 +138,7 @@ def generate_csv(df, show_title):
     return folderPath
 
 #===============Line Plot=================================================
-def generate_plots(df, folderPath, show_title):
+def generate_plots(df, folderPath, show_title, fig1_dimen, fig2_dimen, fig3_dimen):
     
     #Make copies of original df to be used for boxplot and heatmap below
     box_df = df.copy()
@@ -147,8 +147,11 @@ def generate_plots(df, folderPath, show_title):
     plt.style.use('ggplot')
 
     # seasons = df['season'].drop_duplicates().to_list()
+    
+    #unpack fig1 dimensions to figsize and dpi
+    fig1_size, fig1_dpi = fig1_dimen
 
-    fig1 = plt.figure(1, figsize=(12, 6), dpi=200)
+    fig1 = plt.figure(1, figsize=fig1_size, dpi=fig1_dpi)
     
     #Add x column to dataframe; 1 through total number of episodes
     #x column used as x-axis for trend line and each season rating series
@@ -205,7 +208,10 @@ def generate_plots(df, folderPath, show_title):
     plt.title(show_title, fontweight='bold', pad=10)
     
     #========Box Plot============================ 
-    fig2 = plt.figure(2, figsize=(6, 6), dpi=200)
+    #unpack fig2 dimensions to figsize and dpi
+    fig2_size, fig2_dpi = fig2_dimen
+    
+    fig2 = plt.figure(2, figsize=fig2_size, dpi=fig2_dpi)
 
     seasons = box_df['season'].to_list()
     ratings = box_df['rating'].to_list()
@@ -217,8 +223,11 @@ def generate_plots(df, folderPath, show_title):
 
     ax.set_title(show_title, fontweight='bold', pad=10)
 
-#=======Heat Map=============================
-    fig3 = plt.figure(3, figsize=(6, 6), dpi=200)
+    #=======Heat Map=============================
+    #unpack fig3 dimensions to figsize and dpi
+    fig3_size, fig3_dpi = fig3_dimen
+    
+    fig3 = plt.figure(3, figsize=fig3_size, dpi=fig3_dpi)
 
     heat_df = heat_df.pivot(index='episode_number', columns='season', values='rating')
 
@@ -255,7 +264,11 @@ def main():
     show_url = input("\nEnter IMDB url for TV Show: ")
     df, show_title = get_df(show_url)
     folderPath = generate_csv(df, show_title)
-    generate_plots(df, folderPath, show_title)
+    
+    fig1_dimen = ((12, 6), 200)
+    fig2_dimen = ((6, 6), 200)
+    fig3_dimen = ((6, 6), 200)
+    generate_plots(df, folderPath, show_title, fig1_dimen, fig2_dimen, fig3_dimen)
     
 if __name__ == "__main__":
     main()  
