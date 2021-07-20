@@ -110,8 +110,6 @@ def get_df(url):
     
     df['episode_number'] = df.episode_number.astype(int)
 
-    # df.insert(0, 'show_title', show_title)
-
     return df, show_title
 
 #===============Create CSV File and Folders========================================
@@ -145,8 +143,6 @@ def generate_plots(df, folderPath, show_title, fig1_dimen, fig2_dimen, fig3_dime
     heat_df = df.copy()
 
     plt.style.use('ggplot')
-
-    # seasons = df['season'].drop_duplicates().to_list()
     
     #unpack fig1 dimensions to figsize and dpi
     fig1_size, fig1_dpi = fig1_dimen
@@ -252,7 +248,6 @@ def generate_plots(df, folderPath, show_title, fig1_dimen, fig2_dimen, fig3_dime
     ax2.set_title(show_title, loc='left', fontweight='bold', pad=10)
 
     plt.tight_layout()
-    # plt.show()
     
     fig1.savefig(folderPath + "/fig1.png")
     fig2.savefig(folderPath + "/fig2.png")
